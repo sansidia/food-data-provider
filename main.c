@@ -43,18 +43,53 @@ int main() {
             gets(line);
             sscanf(line, "%lf", &foodSubtypePrices[i][j]);
         }
-        for (int j = 0; j < noFoodSubtypes[i]; j++) {
-            printf("%s (%lf)\n", foodSubtypes[i][j], foodSubtypePrices[i][j]);
+    }
+
+    int noDrinks;
+    printf("Please input no of drinks\n");
+    scanf("%d", &noDrinks);
+    getchar();
+    char **drinks = (char**)malloc(noDrinks * sizeof(char*));
+    double *drinkPrices = (double*)malloc(noDrinks* sizeof(double));
+    printf("Please input the drinks: each line in format <drink> (price):\n");
+    for (int k = 0; k < noDrinks; k++) {
+        drinks[k] = (char*)malloc(MAX_FOOD_NAME * sizeof(char));
+        readFoodItem(drinks[k]);
+        char line[MAX_LINE];
+        gets(line);
+        sscanf(line, "%lf", &drinkPrices[k]);
+    }
+
+    printf("The food data is:\n");
+    for (int m = 0; m < noFoodTypes; m++) {
+        printf("%s: ", foodTypes[m]);
+        for (int i = 0; i < noFoodSubtypes[m]; i++) {
+            printf("(%s - %.2lf) ", foodSubtypes[m][i], foodSubtypePrices[m][i]);
         }
+        printf("\n");
+    }
+    printf("The drinks data is:\n");
+    printf("drinks: ");
+    for (int n = 0; n < noDrinks; n++) {
+        printf("%s", drinks[n]);
+        if(n!=noDrinks-1) printf(", ");
+    }
+    printf("\nprices: ");
+    for (int n = 0; n < noDrinks; n++) {
+        printf("%.0lf", drinkPrices[n]);
+        if(n!=noDrinks-1) printf(", ");
     }
 
 
 
 
-
-
-
     //memory deallocation
+
+    free(drinkPrices);
+    for (int l = 0; l < noDrinks; l++) {
+        free(drinks[l]);
+    }
+    free(drinks);
 
     for (int j = 0; j < noFoodTypes; ++j) {
         free(foodSubtypePrices[j]);
