@@ -5,15 +5,10 @@
 #define MAX_LINE 15
 
 void readFoodItem(char*);
+int readNoOfTypes(char[]);
 
 int main() {
-    //reading number of food types
-    int noFoodTypes;
-    printf("Please input the number of food types\n");
-    scanf("%d", &noFoodTypes);
-    getchar();
-
-    //reading food types
+    int noFoodTypes = readNoOfTypes("food");
     char **foodTypes = (char**)malloc(noFoodTypes * sizeof(char*));
     printf("Please food types (each on a new line, may contain spaces)\n");
     for (int i = 0; i < noFoodTypes; i++) {
@@ -21,11 +16,6 @@ int main() {
         gets(foodTypes[i]);
     }
 
-    /*for (int i = 0; i < noFoodTypes; i++) {
-        printf("%s\n", foodTypes[i]);
-    }*/
-
-    //reading number of food subtypes per type
     int *noFoodSubtypes = (int*)malloc(noFoodTypes* sizeof(int));
     char ***foodSubtypes = (char***)malloc(noFoodTypes * sizeof(char**));
     double **foodSubtypePrices = (double**)malloc(noFoodTypes* sizeof(double*));
@@ -45,10 +35,7 @@ int main() {
         }
     }
 
-    int noDrinks;
-    printf("Please input no of drinks\n");
-    scanf("%d", &noDrinks);
-    getchar();
+    int noDrinks = readNoOfTypes("drinks");
     char **drinks = (char**)malloc(noDrinks * sizeof(char*));
     double *drinkPrices = (double*)malloc(noDrinks* sizeof(double));
     printf("Please input the drinks: each line in format <drink> (price):\n");
@@ -59,57 +46,56 @@ int main() {
         gets(line);
         sscanf(line, "%lf", &drinkPrices[k]);
     }
-
-    printf("The food data is:\n");
+    FILE *outputFile = fopen("data.txt", "w");
+    fprintf(outputFile, "The food data is:\n");
     for (int m = 0; m < noFoodTypes; m++) {
-        printf("%s: ", foodTypes[m]);
+        fprintf(outputFile, "%s: ", foodTypes[m]);
         for (int i = 0; i < noFoodSubtypes[m]; i++) {
-            printf("(%s - %.2lf) ", foodSubtypes[m][i], foodSubtypePrices[m][i]);
+            fprintf(outputFile, "(%s - %.2lf) ", foodSubtypes[m][i], foodSubtypePrices[m][i]);
         }
-        printf("\n");
+        fprintf(outputFile, "\n");
     }
-    printf("The drinks data is:\n");
-    printf("drinks: ");
+    fprintf(outputFile, "The drinks data is:\n");
+    fprintf(outputFile, "drinks: ");
     for (int n = 0; n < noDrinks; n++) {
-        printf("%s", drinks[n]);
-        if(n!=noDrinks-1) printf(", ");
+        fprintf(outputFile, "%s", drinks[n]);
+        if(n!=noDrinks-1) fprintf(outputFile, ", ");
     }
-    printf("\nprices: ");
+    fprintf(outputFile, "\nprices: ");
     for (int n = 0; n < noDrinks; n++) {
-        printf("%.0lf", drinkPrices[n]);
-        if(n!=noDrinks-1) printf(", ");
+        fprintf(outputFile, "%.0lf", drinkPrices[n]);
+        if(n!=noDrinks-1) fprintf(outputFile, ", ");
     }
-
-
-
-
-    //memory deallocation
 
     free(drinkPrices);
     for (int l = 0; l < noDrinks; l++) {
         free(drinks[l]);
     }
     free(drinks);
-
     for (int j = 0; j < noFoodTypes; ++j) {
         free(foodSubtypePrices[j]);
     }
     free(foodSubtypePrices);
-
     for (int j = 0; j < noFoodTypes; ++j) {
         for (int i = 0; i < noFoodSubtypes[i];i++) {
             free(foodSubtypes[i][j]);
         }
     }
     free(foodSubtypes);
-
     free(noFoodSubtypes);
     for (int j = 0; j < noFoodTypes; ++j) {
         free(foodTypes[j]);
     }
     free(foodTypes);
-    
     return 0;
+}
+
+int readNoOfTypes(char type[]) {
+    int number;
+    printf("Please input number of %s types\n", type);
+    scanf("%d", &number);
+    getchar();
+    return number;
 }
 
 void readFoodItem(char* foodItem) {
